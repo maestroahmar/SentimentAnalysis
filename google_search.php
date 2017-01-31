@@ -1,13 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+</head>
+<body>
+
 <?php    
-$url = 'https://api.themoviedb.org/3/movie/now_playing?api_key=3a92fa1ff3261395ad9bd44c7cc95519&language=english&page=1';
+$url = 'https://api.themoviedb.org/3/movie/now_playing?api_key=3a92fa1ff3261395ad9bd44c7cc95519&language=en-US&page=1&region=in';
 
+    function get_json_format($u)
+    {
+        $json = file_get_contents($u);
+        $data = json_decode($json);
+        return $data;
+    }
 
+    function create_hashtag($h)
+    {
+    $h = str_replace(' ', '', $h);
+    $h = strtolower($h);
+    $h = preg_replace("/:[[:alnum:]]*/","", $h);
+    $h =  preg_replace("/[^A-Za-z0-9\-]/", "", $h);
+    $h =  str_replace("-", "", $h);
+    $h = "#".$h;
+    return $h;
+    }
 
-
-    $json = file_get_contents($url);
+    
 	
     
-    $data = json_decode($json);
+
+    $data = get_json_format($url);
     $arr = $data->results;
     $count_now_playing = count($data->results);
     echo $count_now_playing;
@@ -18,15 +41,23 @@ $url = 'https://api.themoviedb.org/3/movie/now_playing?api_key=3a92fa1ff3261395a
     for ($x = 0; $x <$count_now_playing; $x++)
     {
     	
-	 $title[$x] = $data->results[$x]->original_title;
-	 
-       echo $title[$x]."\n";
-    $title[$x] = str_replace(' ', '', $title[$x]);
-    $title[$x] = strtolower($title[$x]);
-    $title[$x] = "#".$title[$x]."\n";
-    $temp = $title[$x];
-    exec("Rscript fine_twitter.r $temp",$call_file);
+	 $title[$x] = $data->results[$x]->title;
+	$movie_id = $data->results[$x]->id;
+   echo $title[$x]."\n";
+   echo $movie_id."\n";
+   $credits_movie = "https://api.themoviedb.org/3/movie/{movie_id}/credits?api_key=3a92fa1ff3261395ad9bd44c7cc95519";
+       $credits_movie = str_replace("{movie_id}", $movie_id, $credits_movie);
+       $json_cast = file_get_contents($credits_movie);
+       $cast = json_decode($json_cast);
+       $actor=$cast->cast[0]->name;
+       $actor = create_hashtag($actor);
+      $title[$x] = create_hashtag($title[$x]);
+        echo $title[$x]."\n".$actor;
+    $movie_name = $title[$x];
+    $title[$x] = $title[$x]."\n";
+    exec("Rscript words.r $movie_name $actor",$call_file);
     print_r($call_file);
+
     fwrite($movie_file, $title[$x]);
 
 	
@@ -41,3 +72,6 @@ $url = 'https://api.themoviedb.org/3/movie/now_playing?api_key=3a92fa1ff3261395a
 ?>
 
 
+
+</body>
+</html>
