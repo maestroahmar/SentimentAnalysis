@@ -34,32 +34,37 @@ $title = array();
 $over = array();
 $poster = array();
 $movie_file = fopen("movie_names.txt", "w+");
-
+$movie_name = fopen("movies.txt","w+");
 for ($x = 0; $x <$count_now_playing; $x++)
 {
 	
 $title[$x] = $data->results[$x]->title;
 $movie_id = $data->results[$x]->id;
-echo "Movie Name --> ".$title[$x]."\n";
+echo "Movie Name --> ".$title[$x]."\n  Movie ID ---->".$movie_id;
 $credits_movie = "https://api.themoviedb.org/3/movie/{movie_id}/credits?api_key=3a92fa1ff3261395ad9bd44c7cc95519";
 $credits_movie = str_replace("{movie_id}", $movie_id, $credits_movie);  
 $json_cast = file_get_contents($credits_movie);
 $cast = json_decode($json_cast);
 $actor=$cast->cast[0]->name;
 $actor = create_hashtag($actor);
+fwrite($movie_name, $title[$x]);
 $title[$x] = create_hashtag($title[$x]);
 echo $title[$x]."\n".$actor;
 $movie_name = $title[$x];
 $title[$x] = $title[$x]."\n";
-exec("Rscript words.r $movie_name $actor",$call_file);
-print_r($call_file);
+#exec("Rscript words.r $movie_name $actor",$call_file);
+#print_r($call_file);
 
 fwrite($movie_file, $title[$x]);
 
-
 $over[$x]=$data->results[$x]->overview;
 
-$poster[$x] = $data->results[$x]->poster_path;
+$poster[$x] = " http://image.tmdb.org/t/p/w185".$data->results[$x]->poster_path;
+
+echo "\n".$poster[$x]."\n";
+
+
+
 }
 
 //Ratings of the movies calculated

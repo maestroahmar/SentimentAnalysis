@@ -15,7 +15,7 @@ actor <- as.integer(args[2])
 #movie name and actor input from php file
 setup_twitter_oauth(consumer_key, consumer_secret, access_token, access_secret)
 #setting up twitter authentication
-tweets <- searchTwitter(names_movies,n=100, resultType = "recent")
+tweets <- searchTwitter(names_movies,n=500, resultType = "recent")
 #search for particular movie along with actor
 #tweets <- strip_retweets(tweets)
 #removing the retweets which are repeated more than once.
@@ -90,6 +90,8 @@ for(j in tw)
 }
 #write the value to a text file.
 write(s,file='ratings.txt',append=TRUE)
+write(pos,file='positive.txt',append=TRUE)
+write(neg,file='negative.txt',append=TRUE)
 print(s)
 
 
