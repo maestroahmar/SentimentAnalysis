@@ -47,13 +47,13 @@ $json_cast = file_get_contents($credits_movie);
 $cast = json_decode($json_cast);
 $actor=$cast->cast[0]->name;
 $actor = create_hashtag($actor);
-fwrite($movie_name, $title[$x]);
+#fwrite($movie_name, $title[$x]);
 $title[$x] = create_hashtag($title[$x]);
 echo $title[$x]."\n".$actor;
 $movie_name = $title[$x];
 $title[$x] = $title[$x]."\n";
-#exec("Rscript words.r $movie_name $actor",$call_file);
-#print_r($call_file);
+exec("Rscript words.r $movie_name $actor",$call_file);
+print_r($call_file);
 
 fwrite($movie_file, $title[$x]);
 
@@ -68,25 +68,6 @@ echo "\n".$poster[$x]."\n";
 }
 
 //Ratings of the movies calculated
-$rating_file =  file_get_contents("ratings.txt");
-$s = "";
-$movies_ratings = array();
-for($i=0; $i<strlen($rating_file); $i++)
-{   
-
-    if(!is_numeric($rating_file[$i]) && $rating_file[$i] != '-')
-    {   
-        $s = (integer)$s;
-        array_push($movies_ratings,$s);
-        $s = "";
-    }
-    else
-    {
-        $s = $s.$rating_file[$i];
-    }
-}
-
-rsort($movies_ratings);
 
 
 

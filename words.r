@@ -2,6 +2,8 @@ library(twitteR)
 s <- 0
 smiley_count <- 0
 words_count <- 0
+fneg <- 0
+fpos <- 0
 neg <- 0
 pos <- 0
 consumer_key <- "iS71TIxdgtjMn90IhtqMKqscn"
@@ -15,7 +17,7 @@ actor <- as.integer(args[2])
 #movie name and actor input from php file
 setup_twitter_oauth(consumer_key, consumer_secret, access_token, access_secret)
 #setting up twitter authentication
-tweets <- searchTwitter(names_movies,n=500, resultType = "recent")
+tweets <- searchTwitter(names_movies,n=100, resultType = "recent")
 #search for particular movie along with actor
 #tweets <- strip_retweets(tweets)
 #removing the retweets which are repeated more than once.
@@ -56,11 +58,13 @@ for(j in tw)
 
 		if(smi[which(smi$smiley == j),2] < 0)
 		{
-			neg <- neg + 1;
+			fneg <- fneg + 1;
+			neg <- neg + smi[which(smi$smiley == j),2]
 		}
 		else
 		{
-			pos <- pos + 1;
+			fpos <- fpos + 1;
+			pos <- pos + smi[which(smi$smiley == j),2]
 
 		}
 
@@ -74,12 +78,13 @@ for(j in tw)
 	words_count = words_count + 1
 	if(val[which(val$term == j),2] < 0)
 		{
-			neg <- neg + 1;
+			fneg <- fneg + 1;
+			neg <- neg + val[which(val$term == j),2]
 		}
 		else
 		{
-			pos <- pos + 1;
-
+			fpos <- fpos + 1;
+			pos <- pos + val[which(val$term == j),2]
 		}
 	
 	}
@@ -88,11 +93,40 @@ for(j in tw)
 }
 
 }
+print("TOTAL NUMBER OF POSITIVES")
+print(fpos)
+print("TOTAL VALUE OF POSITIVES")
+print(pos)
+print("AVERAGE POSITIVE RATING GIVEN")
+print(pos/fpos)
+print("TOTAL NUMBER OF NEGATIVES")
+print(fneg)
+print("TOTAL VALUE OF NEGATIVES")
+print(neg)
+print("AVERAGE NEGATIVE RATING GIVEN")
+print(neg/fneg)
+
+
+#print(avgneg)
+#print(avgpos)
+
+
+
 #write the value to a text file.
-write(s,file='ratings.txt',append=TRUE)
-write(pos,file='positive.txt',append=TRUE)
-write(neg,file='negative.txt',append=TRUE)
-print(s)
+if (fpos > fneg)
+{
+fin <- 5*(1-((exp((-1)*(fpos/pos)))*(exp((fneg/neg))))) + ((fpos-fneg)/(fpos+fneg)) 
+}
+if(fpos < fneg)
+{
+fin <- 5*(1-((exp((-1)*(fpos/pos)))*(exp((fneg/neg))))) - ((fpos-fneg)/(fpos+fneg)) 
+
+}
+print(fin)
+write(fin,file='ratings.txt',append=TRUE)
+write(fpos,file='fpositive.txt',append=TRUE)
+write(fneg,file='fnegative.txt',append=TRUE)
+
 
 
 
