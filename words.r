@@ -8,6 +8,7 @@ fneg <- 0
 fpos <- 0
 neg <- 0
 pos <- 0
+fin <- 0
 # Instance/Platform variables that are responsible for holding the values of certain parameters of the calculation
 consumer_key <- "iS71TIxdgtjMn90IhtqMKqscn"
 #Consumer keys are also known as API keys. You'll also need your consumer secret. To make API calls, you'll also need an access token and access token secret, collectively called an "oauth token" -- they represent a user making a request
@@ -18,17 +19,30 @@ access_token <- "380908509-EYQ0TQqKY7xnoRD1wboeYaQsHLYWnUPFPgCRfGhc"
 access_secret <- "2XWL29B7EIE3nZru5av9t9Zg7Sb6bl50z1jNaASQ0b6jo"
 #Access token is what is issued to the client once the client successfully authenticates itself (using the consumer key & secret). This access token defines the privileges of the client (what data the client can and cannot access). Now every time the client wants to access the end-user's data, the access token secret is sent with the access token as a password (similar to the consumer secret).
 #credentials for accessing twitter tweets
-args <- commandArgs(TRUE) 
+#args <- commandArgs(TRUE) 
 #Command Line Arguments for getting the name of the movie that is being passed in the PHP file (base) which is stored here in a variable.
-names_movies <- as.integer(args[1])
-actor <- as.integer(args[2])
-#The received parameter is an array moreover a list that has the name of the movie and actor as [1] and [2] position.
-#movie name and actor input from php file
-search_key <- paste(names_movies,actor,sep=' ')
+#names_movies <- as.character(args[1])
+#actor <- as.character(args[2])
+#title <-  as.character(args[3])
+#poster <- as.character(args[4])
+
+search_term <- as.matrix(read.table("/home/laitkor/Desktop/Project_version_1.1/Sentiment Analysis/movies_list.csv",header=F))
+
 #Paste function is used to concatenate the names of the movie and actor to search the keyword on  Twitter. 
 setup_twitter_oauth(consumer_key, consumer_secret, access_token, access_secret)
+
+
+#The received parameter is an array moreover a list that has the name of the movie and actor as [1] and [2] position.
+#movie name and actor input from php file
+
+for(srch in search_term)
+{
+#search_key <- paste(names_movies,actor,sep=' ')
+print(srch)
 #setting up twitter authentication with  all the parameters the session is setup for secure authentication.
-tweets <- searchTwitter(search_key,n=100, resultType = "recent")
+tweets <- searchTwitter(srch,n=100, resultType = "recent")
+
+print(tweets)
 #search for particular movie along with actor with this function, the function contains atleast 2 variables, one is the text that is searched on the Twitter DB, other one is the number of the tweets that should be searched for
 #NOTE- If the number of mentions do not match  the number provided or is less than the number, then complete search is not done, it is stopped.
 #tweets <- strip_retweets(tweets)
@@ -127,18 +141,31 @@ print(neg/fneg)
 #write the value to a text file.
 if (fpos > fneg)
 {
-fin <- 10*(1-((exp((-1)*(fpos/pos)))*(exp((fneg/neg))))) + ((fpos-fneg)/(fpos+fneg)) 
+fin <- 10*(1-((exp((-1)*(fpos/pos)))*(exp((fneg/neg)))))  
 }
 if(fpos < fneg)
 {
-fin <- 10*(1-((exp((-1)*(fpos/pos)))*(exp((fneg/neg)))) - ((fpos-fneg)/(fpos+fneg))) 
+fin <- 10*(1-((exp((-1)*(fpos/pos)))*(exp((fneg/neg))))) 
 
 }
+
+#if(fin>9.8)
+#{
+	#fin <- 9.8
+#}
+
 print(fin)
 struct <- list(pos,fpos,neg,fneg,fin)
 write.table(struct,file='complete.csv',sep=',',append=T,col.names=F,row.names=F)
+s <- 0
+smiley_count <- 0
+words_count <- 0
+fneg <- 0
+fpos <- 0
+neg <- 0
+pos <- 0
+fin <- 0
+
+}
 
 
-
-
-1

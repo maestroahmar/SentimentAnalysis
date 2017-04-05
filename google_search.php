@@ -27,12 +27,12 @@ $url = 'https://api.themoviedb.org/3/movie/now_playing?api_key=3a92fa1ff3261395a
     $h = "#".$h;
     //concatinating # before the movie to make the search word more existing and is easy to find.
     return $h;
-    }
+    } 
 
     
-	
     
-
+    
+$db_rate =array();
 $data = get_json_format($url);
 //user-defined function call  to get JSON format ready
 $arr = $data->results;
@@ -46,18 +46,25 @@ $over = array();
 $poster = array();
 //Intializing an array that is used to store the url of the poster of movies, the posters are provided as web .jpg format and can be downloaded. It will be displayed in the div property of the site.
 #$movie_file = fopen("movie_names.txt", "w+");
-
-$movie_name = fopen("movies.txt","w+");
+$movie_poster = fopen('movie_poster.txt', 'a+');
+#$movie_name = fopen("movies.txt","w+");
 //Opening a new file/existing file which will contain the names of all the movies that  are being named from the Movie DB.
-for ($x = 0; $x <$count_now_playing; $x++)
+
+$orig_poster = array();
+$fp=fopen('movies_list.csv', 'w+');
+for ($x = 0; $x <10; $x++)
     //Iterating with the number of the JSON objects as the names of the movies.
 {
-	
+
 $title[$x] = $data->results[$x]->title;
+$orig_title = $title[$x];
 //Extracting/Mining the title of the movie JSON object from the returned object. 
 $movie_id = $data->results[$x]->id;
+
+$movie_rate_db = $data->results[$x]->vote_average;
+array_push($db_rate, $movie_rate_db);
 //Extracting/Mining the title of the movie JSON object from the returned object. The movie ID is unique, which is used further to call API to extract more data about the movie.
-echo "Movie Name --> ".$title[$x]."\n  Movie ID ---->".$movie_id;
+echo "Movie Name --> ".$title[$x]."\n  Movie ID ---->".$movie_id."\n"."Movie Rating by DB ".$movie_rate_db."\n";
 //Debugging purposes console output.
 $credits_movie = "https://api.themoviedb.org/3/movie/{movie_id}/credits?api_key=3a92fa1ff3261395ad9bd44c7cc95519";
 //new url for calling a new API with different data.q
@@ -73,16 +80,14 @@ $actor = create_hashtag($actor);
 //calling the user defined method to get the name of the actor in a format so that they get hashtags names.
 #fwrite($movie_name, $title[$x]);
 $title[$x] = create_hashtag($title[$x]);
+
+fputcsv($fp,explode(',',$title[$x]." "));
+
 //calling the user defined method to get the name of the movie in a format so that they get hashtags names.
 echo $title[$x]."\n".$actor;
 //Debugging purposes console output.
 $movie_name = $title[$x];
 $title[$x] = $title[$x]."\n";
-exec("Rscript words.r $movie_name $actor",$call_file);
-//Calling the R file which is used to fetch data from Twitter, and make sentiment calculations for the same. The name of the movie and actor are passed as command line arguments to the R file execution.
-print_r($call_file);
-//Debugging purposes console output.
-
 #fwrite($movie_file, $title[$x]);
 
 $over[$x]=$data->results[$x]->overview;
@@ -90,10 +95,40 @@ $over[$x]=$data->results[$x]->overview;
 $poster[$x] = " http://image.tmdb.org/t/p/w185".$data->results[$x]->poster_path;
 //The JSOM returns the image link which is relative, in order to make it an absolute link it will be required that a hard coded link is concatenated with the poster url.
 echo "\n".$poster[$x]."\n";
+
+#$orig_poster = $poster[$x];
 //Debugging purposes console output.
+#fwrite($movie_poster, $poster[$x]."\n");
+
+#array_push($orig_poster,$poster[$x]);
+#download_poster($poster[$x],$x);
+$doc = new DOMDocument();
+libxml_use_internal_errors(true);
+$doc->loadHTMLFile("/home/laitkor/Desktop/Project_version_1.1/Sentiment Analysis/Website/index.html");
+libxml_clear_errors();
+$plink = $doc->getElementById(($x+1).'p');
+#$link = $doc->createElement('a');
+#$newLink = $body->appendChild($link);
+$plink->setAttribute("src", $poster[$x]);
+#$linkText = $doc->createTextNode("Display Text For Link");
+#$newLink->appendChild($linkText);
+$doc->saveHTMLFile("/home/laitkor/Desktop/Project_version_1.1/Sentiment Analysis/Website/index.html");
+
 
 
 }
+
+exec("Rscript words.r",$call_file);
+//Calling the R file which is used to fetch data from Twitter, and make sentiment calculations for the same. The name of the movie and actor are passed as command line arguments to the R file execution.
+print_r($call_file);
+//Debugging purposes console output.
+
+
+
+fclose($movie_poster);
+
+
+
 
 
 ?>
