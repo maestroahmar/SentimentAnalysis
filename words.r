@@ -9,6 +9,7 @@ fpos <- 0
 neg <- 0
 pos <- 0
 fin <- 0
+total <- c()
 # Instance/Platform variables that are responsible for holding the values of certain parameters of the calculation
 consumer_key <- "iS71TIxdgtjMn90IhtqMKqscn"
 #Consumer keys are also known as API keys. You'll also need your consumer secret. To make API calls, you'll also need an access token and access token secret, collectively called an "oauth token" -- they represent a user making a request
@@ -41,8 +42,6 @@ for(srch in search_term)
 print(srch)
 #setting up twitter authentication with  all the parameters the session is setup for secure authentication.
 tweets <- searchTwitter(srch,n=100, resultType = "recent")
-
-print(tweets)
 #search for particular movie along with actor with this function, the function contains atleast 2 variables, one is the text that is searched on the Twitter DB, other one is the number of the tweets that should be searched for
 #NOTE- If the number of mentions do not match  the number provided or is less than the number, then complete search is not done, it is stopped.
 #tweets <- strip_retweets(tweets)
@@ -141,11 +140,11 @@ print(neg/fneg)
 #write the value to a text file.
 if (fpos > fneg)
 {
-fin <- 10*(1-((exp((-1)*(fpos/pos)))*(exp((fneg/neg)))))  
+fin <- 10*(1-((exp((-1)*(fpos/pos)))*(exp((fneg/neg))))) + ((fpos-fneg)/(fpos+fneg)) 
 }
 if(fpos < fneg)
 {
-fin <- 10*(1-((exp((-1)*(fpos/pos)))*(exp((fneg/neg))))) 
+fin <- 10*(1-((exp((-1)*(fpos/pos)))*(exp((fneg/neg)))) - ((fpos-fneg)/(fpos+fneg))) 
 
 }
 
@@ -157,6 +156,7 @@ fin <- 10*(1-((exp((-1)*(fpos/pos)))*(exp((fneg/neg)))))
 print(fin)
 struct <- list(pos,fpos,neg,fneg,fin)
 write.table(struct,file='complete.csv',sep=',',append=T,col.names=F,row.names=F)
+total <- append(total,fin)
 s <- 0
 smiley_count <- 0
 words_count <- 0
@@ -167,5 +167,8 @@ pos <- 0
 fin <- 0
 
 }
+png(file='graph.png')
+barplot(total)
+dev.off()
 
 
