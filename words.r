@@ -39,7 +39,7 @@ setup_twitter_oauth(consumer_key, consumer_secret, access_token, access_secret)
 for(srch in search_term)
 {
 #search_key <- paste(names_movies,actor,sep=' ')
-print(srch)
+#print(srch)
 #setting up twitter authentication with  all the parameters the session is setup for secure authentication.
 tweets <- searchTwitter(srch,n=100, resultType = "recent")
 #search for particular movie along with actor with this function, the function contains atleast 2 variables, one is the text that is searched on the Twitter DB, other one is the number of the tweets that should be searched for
@@ -118,18 +118,22 @@ for(j in tw)
 }
 
 }
-print("TOTAL NUMBER OF POSITIVES")
-print(fpos)
-print("TOTAL VALUE OF POSITIVES")
-print(pos)
-print("AVERAGE POSITIVE RATING GIVEN")
-print(pos/fpos)
-print("TOTAL NUMBER OF NEGATIVES")
-print(fneg)
-print("TOTAL VALUE OF NEGATIVES")
-print(neg)
-print("AVERAGE NEGATIVE RATING GIVEN")
-print(neg/fneg)
+#print("TOTAL NUMBER OF POSITIVES")
+#print(fpos)
+#print("TOTAL VALUE OF POSITIVES")
+#print(pos)
+#print("AVERAGE POSITIVE RATING GIVEN")
+#print(pos/fpos)
+#print("TOTAL NUMBER OF NEGATIVES")
+#print(fneg)
+
+#print("TOTAL VALUE OF NEGATIVES")
+
+#print(neg)
+
+#print("AVERAGE NEGATIVE RATING GIVEN")
+
+#print(neg/fneg)
 
 
 #print(avgneg)

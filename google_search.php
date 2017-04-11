@@ -120,7 +120,7 @@ $doc->saveHTMLFile("/home/laitkor/Desktop/Project_version_1.1/Sentiment Analysis
 
 exec("Rscript words.r",$call_file);
 //Calling the R file which is used to fetch data from Twitter, and make sentiment calculations for the same. The name of the movie and actor are passed as command line arguments to the R file execution.
-print_r($call_file);
+var_dump($call_file);
 //Debugging purposes console output.
 
 
