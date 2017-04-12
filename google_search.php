@@ -107,6 +107,7 @@ libxml_use_internal_errors(true);
 $doc->loadHTMLFile("/home/laitkor/Desktop/Project_version_1.1/Sentiment Analysis/Website/index.html");
 libxml_clear_errors();
 $plink = $doc->getElementById(($x+1).'p');
+
 #$link = $doc->createElement('a');
 #$newLink = $body->appendChild($link);
 $plink->setAttribute("src", $poster[$x]);

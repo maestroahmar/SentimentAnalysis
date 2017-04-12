@@ -35,9 +35,10 @@ setup_twitter_oauth(consumer_key, consumer_secret, access_token, access_secret)
 
 #The received parameter is an array moreover a list that has the name of the movie and actor as [1] and [2] position.
 #movie name and actor input from php file
-
+tmp <- 0
 for(srch in search_term)
 {
+tmp <- tmp + 1
 #search_key <- paste(names_movies,actor,sep=' ')
 #print(srch)
 #setting up twitter authentication with  all the parameters the session is setup for secure authentication.
@@ -158,6 +159,12 @@ fin <- 10*(1-((exp((-1)*(fpos/pos)))*(exp((fneg/neg)))) - ((fpos-fneg)/(fpos+fne
 #}
 
 print(fin)
+slices <- c(fpos,fneg)
+lbls <- c("Positive Tweets","Negative Tweets")
+fname <- paste("/Website/",tmp,".png",sep="")
+png(file=fname)
+pie(slices,lbls,col = rainbow(length(slices)))
+dev.off()
 struct <- list(pos,fpos,neg,fneg,fin)
 write.table(struct,file='complete.csv',sep=',',append=T,col.names=F,row.names=F)
 total <- append(total,fin)
@@ -171,7 +178,7 @@ pos <- 0
 fin <- 0
 
 }
-png(file='graph.png')
+png(file='/Website/graph.png')
 barplot(total)
 dev.off()
 
