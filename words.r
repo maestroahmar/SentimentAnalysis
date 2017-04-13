@@ -11,9 +11,9 @@ pos <- 0
 fin <- 0
 total <- c()
 # Instance/Platform variables that are responsible for holding the values of certain parameters of the calculation
-consumer_key <- "iS71TIxdgtjMn90IhtqMKqscn"
+consumer_key <- "2vHmWf7E7xQbYgdNopRvMKEoN"
 #Consumer keys are also known as API keys. You'll also need your consumer secret. To make API calls, you'll also need an access token and access token secret, collectively called an "oauth token" -- they represent a user making a request
-consumer_secret <- "rmFMbW3BnYQK82Sk7orrlE1jdrOi54LWtd851x7GXgxfZELza8"
+consumer_secret <- "pae5qfjbopFGHjbzCGGdYsEcXBtAijouV8VEVQwbzs8Rzn215z"
 #onsumer secret is the client password that is used to authenticate with the authentication server, which is a Twitter/Facebook/etc. server that authenticates the client. Access token is what is issued to the client once the client successfully authenticates itself (using the consumer key & secret).
 access_token <- "380908509-EYQ0TQqKY7xnoRD1wboeYaQsHLYWnUPFPgCRfGhc"
 #An access token is an object that describes the security context of a process or thread. The information in a token includes the identity and privileges of the user account associated with the process or thread. ... The security identifier (SID) for the user's account. SIDs for the groups of which the user is a member.
@@ -27,7 +27,7 @@ access_secret <- "2XWL29B7EIE3nZru5av9t9Zg7Sb6bl50z1jNaASQ0b6jo"
 #title <-  as.character(args[3])
 #poster <- as.character(args[4])
 
-search_term <- as.matrix(read.table("/home/laitkor/Desktop/Project_version_1.1/Sentiment Analysis/movies_list.csv",header=F))
+search_term <- as.matrix(read.table("C:\\Users\\Ahmar Zafar\\Desktop\\SentimentAnalysis-master\\movies_list.csv",header=F))
 
 #Paste function is used to concatenate the names of the movie and actor to search the keyword on  Twitter. 
 setup_twitter_oauth(consumer_key, consumer_secret, access_token, access_secret)
@@ -153,19 +153,40 @@ fin <- 10*(1-((exp((-1)*(fpos/pos)))*(exp((fneg/neg)))) - ((fpos-fneg)/(fpos+fne
 
 }
 
-#if(fin>9.8)
-#{
-	#fin <- 9.8
-#}
+if((fpos/(fpos+fneg) > .5) && fin < 7 )
+{
+fin <- fin + (fpos/(fpos+fneg))
+}
+
+else if((fpos/(fpos+fneg) > .5) && fin < 8)
+{
+fin <- fin + ((fpos/(fpos+fneg)*.75)) 
+}
+else if((fpos/(fpos+fneg) > .5) && fin < 9.5){
+fin <- fin + ((fpos/(fpos+fneg)*.25))
+}
+
+if((fneg/(fpos+fneg) > .4))
+{
+fin <- fin - (fpos/(fpos+fneg))
+}
+
+
+if(fin > 9.8)
+{
+fin <- 9.8
+}
 
 print(fin)
 slices <- c(fpos,fneg)
 lbls <- c("Positive Tweets","Negative Tweets")
-fname <- paste("/Website/",tmp,".png",sep="")
+setwd("C:\\Users\\Ahmar Zafar\\Desktop\\SentimentAnalysis-master\\Website\\Website\\images")
+fname <- paste(tmp,".png",sep="")
 png(file=fname)
 pie(slices,lbls,col = rainbow(length(slices)))
 dev.off()
 struct <- list(pos,fpos,neg,fneg,fin)
+setwd("C:\\Users\\Ahmar Zafar\\Desktop\\SentimentAnalysis-master")
 write.table(struct,file='complete.csv',sep=',',append=T,col.names=F,row.names=F)
 total <- append(total,fin)
 s <- 0
@@ -178,8 +199,9 @@ pos <- 0
 fin <- 0
 
 }
-png(file='/Website/graph.png')
+setwd("C:\\Users\\Ahmar Zafar\\Desktop\\SentimentAnalysis-master\\Website\\Website\\images")
+png(file='graph.png')
 barplot(total)
 dev.off()
 
-
+#browseURL("C:\Users\Ahmar Zafar\Desktop\SentimentAnalysis-master\Website\Website\index.html")

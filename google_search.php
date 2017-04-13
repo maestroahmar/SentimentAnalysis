@@ -104,7 +104,7 @@ echo "\n".$poster[$x]."\n";
 #download_poster($poster[$x],$x);
 $doc = new DOMDocument();
 libxml_use_internal_errors(true);
-$doc->loadHTMLFile("/home/laitkor/Desktop/Project_version_1.1/Sentiment Analysis/Website/index.html");
+$doc->loadHTMLFile("C:\Users\Ahmar Zafar\Desktop\SentimentAnalysis-master\Website\Website\index.html");
 libxml_clear_errors();
 $plink = $doc->getElementById(($x+1).'p');
 
@@ -113,7 +113,7 @@ $plink = $doc->getElementById(($x+1).'p');
 $plink->setAttribute("src", $poster[$x]);
 #$linkText = $doc->createTextNode("Display Text For Link");
 #$newLink->appendChild($linkText);
-$doc->saveHTMLFile("/home/laitkor/Desktop/Project_version_1.1/Sentiment Analysis/Website/index.html");
+$doc->saveHTMLFile("C:\Users\Ahmar Zafar\Desktop\SentimentAnalysis-master\Website\Website\index.html");
 
 
 
@@ -127,10 +127,6 @@ var_dump($call_file);
 
 
 fclose($movie_poster);
-
-
-
-
 
 ?>
 
