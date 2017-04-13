@@ -27,7 +27,7 @@ access_secret <- "2XWL29B7EIE3nZru5av9t9Zg7Sb6bl50z1jNaASQ0b6jo"
 #title <-  as.character(args[3])
 #poster <- as.character(args[4])
 
-search_term <- as.matrix(read.table("C:\\Users\\Ahmar Zafar\\Desktop\\SentimentAnalysis-master\\movies_list.csv",header=F))
+search_term <- as.matrix(read.table("/home/laitkor/Desktop/Project_version_1.1/Sentiment Analysis/movies_list.csv",header=F))
 
 #Paste function is used to concatenate the names of the movie and actor to search the keyword on  Twitter. 
 setup_twitter_oauth(consumer_key, consumer_secret, access_token, access_secret)
@@ -63,7 +63,7 @@ tweet_txt = gsub("^\\s+|\\s+$", "", tweet_txt)
 tweet_txt = gsub("[ \t]{2,}", "", tweet_txt)
 #removing & symbols
 tweet_txt = gsub("amp", "", tweet_txt)
-
+setwd("/home/laitkor/Desktop/SentimentAnalysis-master")
 #reading the words along with their weights.
 val <- read.table("tweets_val.txt",header=F,sep="\t",quote="",col.names=c("term","score"))
 #reading smiley symbols along with their weights
@@ -147,46 +147,58 @@ if (fpos > fneg)
 {
 fin <- 10*(1-((exp((-1)*(fpos/pos)))*(exp((fneg/neg))))) + ((fpos-fneg)/(fpos+fneg)) 
 }
-if(fpos < fneg)
+if(fpos <= fneg)
 {
 fin <- 10*(1-((exp((-1)*(fpos/pos)))*(exp((fneg/neg)))) - ((fpos-fneg)/(fpos+fneg))) 
 
 }
+if(fpos != 0 && fneg != 0)
+	{
+	if((fpos/(fpos+fneg) > .5) && (fin < 7) )
+	{
+	fin <- fin + (fpos/(fpos+fneg))
+	}
 
-if((fpos/(fpos+fneg) > .5) && fin < 7 )
-{
-fin <- fin + (fpos/(fpos+fneg))
-}
+	else if((fpos/(fpos+fneg) > .5) && (fin < 8))
+	{
+	fin <- fin + ((fpos/(fpos+fneg)*.75)) 
+	}
+	else if((fpos/(fpos+fneg) > .5) && (fin < 9.5))
+	{
+	fin <- fin + ((fpos/(fpos+fneg)*.25))
+	}
 
-else if((fpos/(fpos+fneg) > .5) && fin < 8)
-{
-fin <- fin + ((fpos/(fpos+fneg)*.75)) 
-}
-else if((fpos/(fpos+fneg) > .5) && fin < 9.5){
-fin <- fin + ((fpos/(fpos+fneg)*.25))
-}
-
-if((fneg/(fpos+fneg) > .4))
-{
-fin <- fin - (fpos/(fpos+fneg))
-}
+	if((fneg/(fpos+fneg) > .4))
+	{
+	fin <- fin - (fpos/(fpos+fneg))
+	}
 
 
 if(fin > 9.8)
 {
 fin <- 9.8
 }
-
+}
+if(fneg == 0)
+{
+	fin <- 10*(1-((exp((-1)*(fpos)))))
+	if(fin < 9)
+	fin <- fin + ((fpos-fneg)/(fpos+fneg))
+}
+if(fpos == 0)
+{
+	fin <- 0
+}
 print(fin)
 slices <- c(fpos,fneg)
 lbls <- c("Positive Tweets","Negative Tweets")
-setwd("C:\\Users\\Ahmar Zafar\\Desktop\\SentimentAnalysis-master\\Website\\Website\\images")
+setwd("/home/laitkor/Desktop/SentimentAnalysis-master/Website/images")
 fname <- paste(tmp,".png",sep="")
 png(file=fname)
-pie(slices,lbls,col = rainbow(length(slices)))
+pie(slices,lbls,col = rainbow(length(slices)),main=srch)
 dev.off()
 struct <- list(pos,fpos,neg,fneg,fin)
-setwd("C:\\Users\\Ahmar Zafar\\Desktop\\SentimentAnalysis-master")
+setwd("/home/laitkor/Desktop/SentimentAnalysis-master/Website")
 write.table(struct,file='complete.csv',sep=',',append=T,col.names=F,row.names=F)
 total <- append(total,fin)
 s <- 0
@@ -199,9 +211,9 @@ pos <- 0
 fin <- 0
 
 }
-setwd("C:\\Users\\Ahmar Zafar\\Desktop\\SentimentAnalysis-master\\Website\\Website\\images")
+setwd("/home/laitkor/Desktop/SentimentAnalysis-master/Website/images")
 png(file='graph.png')
-barplot(total)
+barplot(total,main="All Movie Ratings",xlab="Movies Released this week", ylab="Ratings")
 dev.off()
 
 #browseURL("C:\Users\Ahmar Zafar\Desktop\SentimentAnalysis-master\Website\Website\index.html")
