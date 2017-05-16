@@ -9,6 +9,8 @@ fpos <- 0
 neg <- 0
 pos <- 0
 fin <- 0
+single_neg <- c()
+single_pos <- c()
 total <- c()
 # Instance/Platform variables that are responsible for holding the values of certain parameters of the calculation
 consumer_key <- "2vHmWf7E7xQbYgdNopRvMKEoN"
@@ -27,7 +29,7 @@ access_secret <- "2XWL29B7EIE3nZru5av9t9Zg7Sb6bl50z1jNaASQ0b6jo"
 #title <-  as.character(args[3])
 #poster <- as.character(args[4])
 
-search_term <- as.matrix(read.table("/home/laitkor/Desktop/Project_version_1.1/Sentiment Analysis/movies_list.csv",header=F))
+search_term <- as.matrix(read.table("movies_list.csv",header=F))
 
 #Paste function is used to concatenate the names of the movie and actor to search the keyword on  Twitter. 
 setup_twitter_oauth(consumer_key, consumer_secret, access_token, access_secret)
@@ -63,7 +65,7 @@ tweet_txt = gsub("^\\s+|\\s+$", "", tweet_txt)
 tweet_txt = gsub("[ \t]{2,}", "", tweet_txt)
 #removing & symbols
 tweet_txt = gsub("amp", "", tweet_txt)
-setwd("/home/laitkor/Desktop/SentimentAnalysis-master")
+setwd("C:\\Users\\Ahmar Zafar\\Desktop\\SentimentAnalysis-master")
 #reading the words along with their weights.
 val <- read.table("tweets_val.txt",header=F,sep="\t",quote="",col.names=c("term","score"))
 #reading smiley symbols along with their weights
@@ -86,11 +88,13 @@ for(j in tw)
 		{
 			fneg <- fneg + 1;
 			neg <- neg + smi[which(smi$smiley == j),2]
+			single_neg <- append(single_neg,smi[which(smi$smiley == j),2])
 		}
 		else
 		{
 			fpos <- fpos + 1;
 			pos <- pos + smi[which(smi$smiley == j),2]
+			single_pos <- append(single_pos,smi[which(smi$smiley == j),2])
 
 		}
 
@@ -106,11 +110,13 @@ for(j in tw)
 		{
 			fneg <- fneg + 1;
 			neg <- neg + val[which(val$term == j),2]
+			single_neg <- append(single_neg,smi[which(smi$smiley == j),2])
 		}
 		else
 		{
 			fpos <- fpos + 1;
 			pos <- pos + val[which(val$term == j),2]
+			single_pos <- append(single_pos,smi[which(smi$smiley == j),2])
 		}
 	
 	}
@@ -192,13 +198,15 @@ if(fpos == 0)
 print(fin)
 slices <- c(fpos,fneg)
 lbls <- c("Positive Tweets","Negative Tweets")
-setwd("/home/laitkor/Desktop/SentimentAnalysis-master/Website/images")
+setwd("C:\\Users\\Ahmar Zafar\\Desktop\\SentimentAnalysis-master\\Website\\images")
 fname <- paste(tmp,".png",sep="")
 png(file=fname)
 pie(slices,lbls,col = rainbow(length(slices)),main=srch)
 dev.off()
 struct <- list(pos,fpos,neg,fneg,fin)
-setwd("/home/laitkor/Desktop/SentimentAnalysis-master/Website")
+setwd("C:\\Users\\Ahmar Zafar\\Desktop\\SentimentAnalysis-master\\Website")
+single_neg <- single_neg * (-1)
+
 write.table(struct,file='complete.csv',sep=',',append=T,col.names=F,row.names=F)
 total <- append(total,fin)
 s <- 0
@@ -211,7 +219,7 @@ pos <- 0
 fin <- 0
 
 }
-setwd("/home/laitkor/Desktop/SentimentAnalysis-master/Website/images")
+setwd("C:\\Users\\Ahmar Zafar\\Desktop\\SentimentAnalysis-master\\Website\\images")
 png(file='graph.png')
 barplot(total,main="All Movie Ratings",xlab="Movies Released this week", ylab="Ratings")
 dev.off()

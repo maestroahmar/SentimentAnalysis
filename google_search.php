@@ -104,7 +104,7 @@ echo "\n".$poster[$x]."\n";
 #download_poster($poster[$x],$x);
 $doc = new DOMDocument();
 libxml_use_internal_errors(true);
-$doc->loadHTMLFile("C:\Users\Ahmar Zafar\Desktop\SentimentAnalysis-master\Website\Website\index.html");
+$doc->loadHTMLFile("C:\\Users\\Ahmar Zafar\\Desktop\\SentimentAnalysis-master\\Website\\index.html");
 libxml_clear_errors();
 $plink = $doc->getElementById(($x+1).'p');
 
@@ -113,7 +113,7 @@ $plink = $doc->getElementById(($x+1).'p');
 $plink->setAttribute("src", $poster[$x]);
 #$linkText = $doc->createTextNode("Display Text For Link");
 #$newLink->appendChild($linkText);
-$doc->saveHTMLFile("C:\Users\Ahmar Zafar\Desktop\SentimentAnalysis-master\Website\Website\index.html");
+$doc->saveHTMLFile("C:\\Users\\Ahmar Zafar\\Desktop\\SentimentAnalysis-master\\Website\\index.html");
 
 
 
@@ -123,7 +123,29 @@ exec("Rscript words.r",$call_file);
 //Calling the R file which is used to fetch data from Twitter, and make sentiment calculations for the same. The name of the movie and actor are passed as command line arguments to the R file execution.
 var_dump($call_file);
 //Debugging purposes console output.
-
+function setInnerHTML($element, $html)
+{
+    $fragment = $element->ownerDocument->createDocumentFragment();
+    $fragment->appendXML($html);
+    $clone = $element->cloneNode(); // Get element copy without children
+    $clone->appendChild($fragment);
+    $element->parentNode->replaceChild($clone, $element);
+}
+$file_complete = fopen("Website/complete.csv","r");
+$doc = new DOMDocument();
+$doc->loadHTMLFile("C:\\Users\\Ahmar Zafar\\Desktop\\SentimentAnalysis-master\\Website\\index.html");
+libxml_use_internal_errors(true);
+libxml_clear_errors();
+$x = 1;
+while(! feof($file_complete))
+  {
+  $complete_info =(fgetcsv($file_complete));
+  $rlink = $doc->getElementById($x.'r');
+  setInnerHTML($rlink,$complete_info[4]);
+  $doc->saveHTMLFile("C:\\Users\\Ahmar Zafar\\Desktop\\SentimentAnalysis-master\\Website\\index.html");
+  $x = $x+1;
+  };
+  fclose($file_complete);
 
 
 fclose($movie_poster);
